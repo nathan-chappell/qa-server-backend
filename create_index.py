@@ -7,7 +7,7 @@ Run this script to create the index, and import the function
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from hashlib import md5
 
 from elasticsearch import Elasticsearch # type: ignore
@@ -30,7 +30,7 @@ def get_paragraphs(paragraphs_dir: str, split_token: str) -> List[Paragraph]:
     for filename in path.glob('*.txt'):
         print(f'processing: {filename}')
         with open(filename,encoding='cp1250') as file:
-            result.extend(file.read().split(SPLIT_TOKEN))
+            result.extend(file.read().split(split_token))
     result = list(map(str.strip,result))
     return result
 
@@ -94,7 +94,7 @@ def index_all(paragraphs: List[Paragraph], index: str = INDEX_NAME):
         _hash = get_hash(paragraph)
         es.index(index=index, id=_id, body={'text':paragraph, 'hash': _hash})
 
-def get_paragraphs_for_query(query: str, index=INDEX_NAME, topk=3) -> List[Paragraph]:
+def get_paragraphs_for_query(query: str, index=INDEX_NAME, topk=3) -> List[Dict[str,Any]]:
     """Retrieve paragraphs from elasticsearch using query as search term.
 
     By default, uses the index `INDEX_NAME` and returns the top 3 results.
@@ -104,12 +104,14 @@ def get_paragraphs_for_query(query: str, index=INDEX_NAME, topk=3) -> List[Parag
     if reply['hits']['total']['value'] == 0:
         return []
     else:
+        def get_hit(hit):
+            return {'text': hit['_source']['text'], '_id': hit['_id']}
         hits = reply['hits']['hits']
-        return list(map(lambda hit: hit['_source']['text'], hits))
+        return list(map(get_hit, hits))
 
 if __name__ == '__main__':
     # directory containing the paragraphs for the site
-    paragraphs_dir = '../site_prepared'
+    paragraphs_dir = './site_prepared'
     # the "paragraph splitter" that is located in the site paragraphs
     split_token = 'PARAGRAPH'
     paragraphs = get_paragraphs(paragraphs_dir, split_token)

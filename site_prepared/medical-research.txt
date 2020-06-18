@@ -1,0 +1,18 @@
+By compiling information from various sources, we've helped medical researchers to overview anonymized patient data and predict diagnosis.
+Mono has built several applications that are used by medical researchers and practitioners in different fields.
+One of the solutions we built is used in brain tumor research and is powered by Python's Flask micro web framework. The application compiles information from various data sources into a single unified database, allowing researchers a better overview and processing of patient data. Anonymized patient data is tracked through the duration of the treatment period. The application's long-term goals are intended to improve tumor diagnosis using prediction modeling and statistical analysis.
+We are developing a Software-as-a-Service (SaaS) solution for automating segmenting and classification of orthopedics MRI, using Machine Learning (ML) techniques. Algorithmic methods for MRI analysis fall into two general categories: classification and segmentation.
+Classification assigns a label to an MRI series: normal/abnormal, level of severity, or a diagnosis. Segmentation is the process of delineating the boundaries, or "contours," of various tissues and processes. Our service contains the functionality of both methods, with emphasis on segmentation, and will serve as a "virtual assistant" in interpreting MR scans to help radiologists in their everyday work.
+Our service functionality will include functionality for acquiring imaging results via DICOM standard, data pre-processing, processing of images using custom ML models, and displaying results in a user-friendly and intuitive fashion.
+Tools and technologies: 
+ASP.NET MVC, 
+Baasic, 
+Angular, 
+SQLServer, 
+React, 
+Power BI, 
+TensorFlow, 
+ElasticSearch, 
+PostgreSQL, 
+Amazon AWS
+

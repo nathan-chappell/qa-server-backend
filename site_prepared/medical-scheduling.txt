@@ -1,0 +1,14 @@
+Anesthesia Scheduler is a web-based scheduling Software-as-a-Service (SaaS) solution that coordinates call and operating room coverage across multiple hospitals.
+What sets it apart from its competitors is the ability to customize the environment to meet each medical groups specific needs.
+The system provides history tracking for each event. Documents can be attached to the schedule each day and can be viewed by providers, and e-mail notifications can be sent to a provider with any scheduling change. The messaging system allows messages to be sent to the entire group, subgroups or specific individuals.
+Providers are able to log onto a specific screen to make requests for vacation. The provider is able to see how many vacations slots are open and how many days of vacation they have available.
+System tracks used, accrued and available vacation days by the provider. Vacation approval or denial notification is available in real-time and sent to the requesting provider via email.
+An advanced reporting system has numerous reports that track all aspects of a schedule. Reports can be customized to suit any group's needs. All critical provider and scheduling information is available at one paperless file.
+The auto-scheduling feature is designed to evenly distribute call assignments for full and part-time employees. It is based on a complex set of rules that can be changed by system administrators to fine-tune its behavior and performance.
+We also designed and developed a native mobile scheduling application for iOS and Android platforms. It features clean, performant and reliable user interface and covers complex notification scenarios, so your staff is always kept up-to-date with their assignments and schedule changes.
+Tools and technologies:
+ASP.NET MVC, 
+Angular, 
+Xamarin, 
+SQLServer
+

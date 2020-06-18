@@ -7,7 +7,7 @@ import sys
 from termcolor import colored
 from typing import List, Set
 
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch # type: ignore
 #from elasticsearch import NotFoundError, RequestError
 
 # GLOBALS
@@ -24,8 +24,8 @@ def highlight(string: str, to_highlight: Set[str], color: str) -> str:
     """Ansi-escape string so that all substrings appear with given color."""
     for word in to_highlight:
         if word == '': continue
-        old = fr'\b{word}\b',
-        new = colored(word, color, attrs=['bold'])
+        old = fr'\b({word})\b'
+        new = colored(r'\1', color, attrs=['bold'])
         string = re.sub(old, new, string, flags=re.IGNORECASE)
     return string
 
@@ -38,6 +38,10 @@ def get_tokens_from_analyzer(text: str) -> Set[str]:
 
 def print_paragraph(paragraph: Paragraph, query: str, answer: str):
     """Print the paragraph, query tokens red and the answer blue"""
+    # TODO:
+    # This highlighting algorithm is all messed up.  I need to deal with
+    # overlapping query tokens and the answer text.  Shouldn't be too hard,
+    # but I'll deal with it later.
     try:
         query_tokens = get_tokens_from_analyzer(query)
     # It would be better to determine all the errors that could possible occur
@@ -51,7 +55,9 @@ def print_paragraph(paragraph: Paragraph, query: str, answer: str):
         query_tokens = set(re.split(r'\W+',query))
     blue_answer = colored(answer, 'blue', attrs=['bold'])
     paragraph_ = paragraph.replace(answer, blue_answer)
-    words = paragraph.split()
+    print(' '*5 + f'query: {query}')
+    print(' '*5 + f'answer: {answer}')
+    words = paragraph_.split()
     line = ''
     for word in words:
         line += ' ' + word
@@ -59,7 +65,7 @@ def print_paragraph(paragraph: Paragraph, query: str, answer: str):
             print(' '*15 + highlight(line, query_tokens, 'red'))
             line = ''
     if line != '': 
-        print(' '*15 + highlight_line(line))
+        print(' '*15 + highlight(line, query_tokens, 'red'))
 
 def answer_to_complete_sentence(answer: str, paragraph: str) -> str:
     r"""Convert an answer into a complete sentence.

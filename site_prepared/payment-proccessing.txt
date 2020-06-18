@@ -1,0 +1,8 @@
+Developing a complete payment processing gateway can be a challenge. We have developed secure and scalable payment processing solutions for our partners.
+There are a lot of moving parts working behind the scenes in every payment processing system. Payment processing gateways connect online shopping carts or virtual terminals and POS to electronic payment processors. As their name implies, they are gateways to the rest of the complex infrastructure that makes electronic payments possible.
+Authorization, financial and settlement data are passed between the shopping cart and a merchant's payment processor. On its end, the payment processor connects to the issuing bank and forwards the payment details. This is a very fragmented environment, where every payment goes through multiple parties.
+We have built a recurring payments API that provides full support for handling recurring transactions. It wraps an existing payment provider without the recurring option.
+Our solution integrates custom scheduling engine that is able to handle hundreds of transactions simultaneously and includes the custom notification system for alerting users.
+An interactive user interface for the payment gateway is developed using the React framework. The dashboard allows a quick overview of transactions, batches, customers, recurring payments, totals, averages and more in an easy to use environment.
+Tools and technologies, ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS
+

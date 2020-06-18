@@ -1,0 +1,11 @@
+Mono has built a wide array of recruitment applications and services, ranging from standard job portals to fully-featured social recruitment automation services and application tracking systems.
+Applicant Tracking Systems, career sites, resume parsers, recruitment automation tools, job boards.
+With more than 15 years of experience in the field and several dozens of different recruitment solutions developed, we clearly understand the processes and information structures, as well as the legal requirements of this industry.
+Our solutions cover a broad range of scenarios and technologies, starting with traditional job boards that typically include employer's and job seeker's registration, job postings with categorization and tagging, simple and advanced search functionality, job application workflow, alerts and a full set of administration and personalization tools.
+Candidate relationship management and lead generation tools combined.
+Collect and review candidate profiles, collaborate by adding comments and mentions, organize profiles within candidate pools, communicate and share information with team members.
+Our sourcing automation tool lets you import and organize all that neat social media profiles you just saw last week - and failed to connect with them. Nurturing prospects and generating leads becomes way more efficient. Our tools automate this process and allow you to increase your recruiter base in no time.
+Visit thousands of social media profiles with one easy click and find what suits your needs. You can automate social profile visits and increase your chances of finding great prospects.
+Our other high-end recruitment solutions include full Application Tracking System (ATS) functionality, along with background screening, multiple job posting and personalized branded sites.
+Tools and technologies: ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS
+

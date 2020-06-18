@@ -1,0 +1,9 @@
+Exploration of wildlife conditions in real-time helped client to monitor and gather information about water quality and a better understanding of the dynamic and changing environment.
+The River, Estuary and Coastal Observing Network (RECON) is a network of water quality sensors deployed throughout the Caloosahatchee River and Estuary to provide real-time, water quality data to scientists, policy makers, and the general public.
+We have built an educational application showing sensor sites with and the data they measure in real time. It includes educative explanations of all parameters and their environmental effects, area lifeform, fishing and boaters info with the weather forecast and custom parameters charting.
+Each sensor communicates with the server using the cell phone network. The raw data is received, decoded and imported into the database. Data is therefore displayed on the web site in near real-time.
+The application includes powerful visualization and graphing options, allowing users to view and analyze all historical data across many parameters, from salinity and water temperature to wind direction and wave height.
+Besides sensor data, the client needed to have standard content management features for entering educational information.
+We have used KeystoneJS, an open source framework for developing database-driven websites in NodeJS, built on top of Express and MongoDB.
+Tools and technologies: ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS.
+

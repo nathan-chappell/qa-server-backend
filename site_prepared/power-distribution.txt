@@ -1,0 +1,10 @@
+Mono delivered multiple advanced software systems for organizations in the power distribution and energy trading industry.
+Enterprise portals for energy operators.
+Energy markets are becoming more competitive every day, and our applications are streamlining operations and enabling easy access to vital operations for improved decision making.
+Croatian transmission system operator is a provider of public regulated services of electricity transmission for the needs of participants in the Croatian market. We have developed a unique, modular, multi-portal solution that is used to track the performance of their grid, discover and analyze key operational events, problems and issues, manage technical documentation and perform other day-to-day operations.
+This customized solution features a robust and flexible security model, as well as all standard content management features. More importantly, it allows for rapid development of customized application modules and subsystems.
+We have built a number of applications for companies in the energy trading sector that offering real-time intelligence and decision-making capabilities that improve their overall performance on the market.
+Management of the electric grid is becoming increasingly complex with growing amounts of distributed energy resources at all levels.
+Mono provides custom solutions for the management, tracking, and orchestration of distribution grids that include modular architecture and support for predictive analytics.
+Tools and technologies, ASP.NET MVC, Angular, React, PostgreSQL, SQL Server, SQLServer Reporting Services, SQLServer Analysis Services
+

@@ -1,0 +1,9 @@
+While building a cloud-based system for providing pet care to customers, we integrated a variety of services ranging from cosmetic procedures and training courses to vet visits.
+Supporting America's Veterinary Discount Plan.
+The system we are building for our client covers most of the USA, with tens of thousands veterinarians and close to a million daily users. Participating veterinary practices give significant discounts on all medical care provided in their offices.
+This solution had to include an advanced, custom-built billing system covering complex discount plans.
+Due to a high volume of usage, and to solve deployment problems and improve production operations, microservices architecture was used. It is emerging as an important approach for distributed mission-critical applications.
+The system is being improved and changed on a daily basis, so testing and continuous integration practices and tools are invaluable to keep everything up and running at all times.
+Pet care system supports various pet management tools and user profile options; dynamic product plans and veterinary services; an advanced search of contracted and non-contracted veterinarians and their services; and an advanced reporting system.
+Tools and technologies, ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS
+

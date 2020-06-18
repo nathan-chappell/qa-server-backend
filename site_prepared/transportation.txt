@@ -1,0 +1,14 @@
+Our transportation, cargo management, and logistics solutions provide a modern way of shipping container management.
+Handling safe and responsible transport of shipping containers.
+Our web and mobile applications provide a modern way of shipping container management by automating and controlling all aspects of logistics providers and freight forwarders operations: pre-alerting, job scheduling, and allocation, automatic job legging, quoting, billing, vehicle and driver management, an overview of wharf/yard statuses, ...
+It includes two separate main sections that collect and present relevant information to different user roles - shipping administration dashboard and truck/forklift driver panels.
+    
+The first section is the Administration dashboard.
+Our goal was to simplify complex container delivery workflow - from port container slot and driver/vehicle allocation to client delivery and billing management. Alongside shipping management, administrators have full access to various statistic indicators, as well as detailed reports.
+Integration with REZ-1 provides real-time first and last-mile shipment visibility and standardizes transport order workflow across a connected network of service providers.
+
+The second section is the Truck driver view.
+Drivers have complete visibility of the jobs assigned to them. They can track each delivery and instantly notify admins about important events that occur during the job execution. All relevant documentation - POD/CWD, hazardous or dangerous goods declarations, EDOs, etc. - is instantly available to drivers.
+All activities are regularly tracked and presented to administrators in real time using allocation map view.
+Tools and technologies: ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS
+

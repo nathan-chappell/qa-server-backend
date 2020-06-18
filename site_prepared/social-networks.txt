@@ -1,0 +1,19 @@
+Mono is building custom social networks, enterprise portals and advanced collaboration tools and platforms that enable our clients to connect their users, coworkers, information, and conversations.
+Building niche community portals.
+Our solutions have been deployed in organizations of all types, regardless of the number of users or employees and the complexity of their requirements and organizational infrastructure. We combine our enterprise portal development with a rich set of productivity tools and modules to make collaboration yet more effective: search, calendars, pools and surveys, tagging, file sharing, document management, notifications, discussions, ranking, reputation, social walls, feeds, and updates, messaging, groups...
+Customizability plays a key role: there is no one size fits all approach that could be used to cover different needs in bespoke social networks.
+Therefore, depending on the target functionality, we have used different development tools, approaches, and methodologies. MonoX social networking framework was used in hundreds of new projects, but we also integrated only parts of its functionality into existing systems built with different technologies. We have been using Baasic in most of the recent projects to provide social networking functionality regardless of the target technology or framework.
+
+PARAGRAPH
+
+White label is a social networking platform built on top of MonoX engine. Personal dashboards, custom user profiles with privacy control, content management, messaging center, subscriptions and notifications, calendars, groups, discussion boards, Q&A
+HOPS Info is a 
+Collaboration tool used to track the performance of the electrical grid and enable knowledge sharing and information flow. Application widgets, notifications, and alerting, discussions, groups, content management
+JobsBoard is a 
+Social recruitment engine and job portal. Custom user profiles, integration with major social networking services, recruitment engine, application tracking system, notifications, alerting
+Jungle Juniors is a 
+Service that makes it super easy to hire awesome nannies and sitters. Custom user profiles, geolocation services, payment processing, reviews, alerting, notifications
+Trackpro is a 
+Fully-featured social network for car racing enthusiasts and professionals. Custom user profiles, discussion boards, reviews, rating, social connections, walls, e-commerce, calendars, events, notifications, search engine
+Tools and technologies: Angular, React, Node.js, ASP.NET MVC, Baasic, MonoX, SQLServer, PostgreSQL, CosmosDB, MongoDB, Azure Service Fabric, Amazon Lambda
+

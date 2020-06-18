@@ -1,0 +1,17 @@
+DevOps: Improve speed, scalability, reliability and security of your software solutions by automating processes that are complicated and slow.
+DevOps is a set of practices that combines software development and infrastructure management to shorten the development life cycle and provide continuous delivery and high quality of software products and services. Our DevOps services cover monitoring, security, tool-chain pipelines, automation and cloud adoption. We offer this as a part of software development process as well as a separate service.
+We can help you with:
+* build configuration and automation
+* continuous integration and deployment
+* release management
+* resource monitoring
+* infrastructure security
+* cloud management
+* performance optimization and load testing
+* end-to-end testing 
+
+New trends in mobile and web development, including big data, IoT, cloud and artificial intelligence are driving demand for more complex and high quality solutions. The benefits of DevOps span the entire delivery pipeline. It leads to removal of manual operations, decreasing errors, and boosting the agility of your team. Deployment frequency is increased, time to market is shortened with lower failure rate of new releases and faster time to recovery. 
+Start a project with us.
+Lets discuss your needs. We can support you at every DevOps-related task. Our experience spans almost two decades and several hundreds completed projects.
+
+

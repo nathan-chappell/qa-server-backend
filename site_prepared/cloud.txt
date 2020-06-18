@@ -1,0 +1,20 @@
+Mono develops high-quality cloud-based solutions for all cloud service models and environments.
+Mono team has been working with different cloud-based environments for more than 10 years.
+We have started with Amazons Elastic Compute Cloud and adopted Microsoft Azure services right after their official release in 2010. In parallel with our work with these public clouds, we have built and used complex private cloud environments, as well as hybrid models. Today, almost all of our solutions rely on at least several cloud-based services.
+
+We gained significant experience with all cloud service models, including Infrastructure as a Service (IaaS), type of online services that hide the low-level details of underlying network infrastructure and physical resources via virtualization.
+This allows businesses to purchase resources on demand and as needed, instead of having to buy hardware outright, but still requires significant skills to maintain the infrastructure.
+Platform as a Service (PaaS) provides developers with a framework they can use to build custom applications upon, without having to deal with data serving, storage, management, and similar tasks.
+
+
+Software as a Service (Saas) refers to cloud-based software solutions that are hosted online and are available for purchase on a subscription basis.
+Backend as a Service (BaaS) provides application developers with a mechanism to connect their applications to cloud storage and other computing services with APIs and SDKs exposed to their applications.
+We even built a complete BaaS solution from scratch and are using it as a backbone of many of our own solutions!
+
+PARAGRAPH
+
+Microservices.
+Going further, we started using serverless computing - a code execution model in which the cloud provider fully manages starting and stopping virtual machines as necessary to serve requests.
+In terms of architecture, most of our new solutions use microservices approach, where applications are composed of small, independent and scalable customer-focused services that communicate over standard protocols and with well-defined interfaces.
+Our team has extensive experience with many modern cloud service models and environments. We take pride in building top-notch cloud-based solutions, regardless of the complexity of your requirements.
+Our cloud stack includes: VMware vSphere, Hyper-V, Amazon EC2, Amazon Elastic Container Service, AWS Batch, AWS Elastic Beanstalk, AWS Fargate, AWS Lambda, Amazon S3, Amazon AWS, Amazon Elastic File System, Amazon Glacier, Amazon Aurora, Amazon RDS, Amazon DynamoDB, Amazon ElastiCache, AWS Database Migration Service, Amazon VPC, Amazon CloudWatch, AWS Identity, Amazon Athena, Amazon CloudSearch, Amazon Kinesis, Amazon API Gateway, AWS Step Functions, Amazon SNS, Amazon MQ, Amazon IoT Core, Amazon Machine Learning, Azure VM, Azure App Service, Azure Notification Hubs, Azure Search, Azure Web Apps, Azure Functions, Azure Service Fabric, Azure SQL Database, Azure Cosmos DB, Azure Redis Cache, Azure Table Storage, Azure Active Directory, Azure Service Bus, Azure IoT Hub, Azure Logic Apps, Azure Data Lake, Azure HDInsight, Azure Event Hubs, Azure Machine Learning Services.

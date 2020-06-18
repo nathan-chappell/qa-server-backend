@@ -1,0 +1,9 @@
+Hospitality and tourism sector is experiencing a rising demand for more authentic and engaging travel experiences. We are building solutions powered by Artificial Intelligence (AI) for relevant search and personalization.
+When preparing for their trips using "old-school" sites and apps, visitors typically see a home page with a mix of content, none of which is directly relevant to their real interests. It takes a lot of effort, skill, and patience to find that ideal hotel or location.
+We are building AI-backed recommendation engines that allow site owners to show recommendations on every page, such as relevant trips, services, packages, and content, based on crowd usage data and explicit user interests, with additional filters. No questionnaires or forms are involved, and users get clean, transparent and simple experience.
+Our search engine implementations improve relevance by incorporating cutting-edge machine learning algorithms (including Learning to Rank), secondary data sources, text analytics and natural language understanding (semantic tagging).
+Recommendations quality is enhanced by the data dynamically aggregated and extrapolated from the Facebook check-ins. The cold-start problem has been addressed by using users' friends' check-in data.
+To further improve how users interact with our systems, we embraced conversational interfaces and bots.
+We are using Microsoft Bot Framework to interact with users on a website, app, Skype, Slack, Facebook Messenger, and more.
+Tools and technologies: ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS
+

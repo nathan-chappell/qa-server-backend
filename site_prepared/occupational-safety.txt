@@ -1,0 +1,9 @@
+Our web solution replaces handwritten reports, work orders, and dispatch notes while saving time and making sure that risks in the workplace are properly controlled.
+Safety engineers regularly review plans and specifications for the new and existing equipment and machinery and maintain and apply knowledge of current policies and regulations. When every segment in the work process is described and examined, detailed reports have to be produced.
+Our solution replaces paperwork and helps users to reinforce health and safety in their organizations.
+The application includes predefined checklists that rely on regulatory conditions and prerequisites, as well as information about instruments used, existing work orders and reports, names and information about companies and people in charge, etc.
+Users can document and asses risks according to individual companies and their line of work, implement safeguards, compile operation instructions and manage incidents and damaging events.
+All work orders and reports can be shared among users, based on their roles and access rights. They can copy reports, dynamically add specific details for every check and produce final reports in a very short time.
+Users and clients can define custom notifications for predefined events, preventing regular checks and procedures to be skipped or forgotten.
+Tools and technologies: ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS
+

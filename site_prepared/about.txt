@@ -1,0 +1,25 @@
+Mono is a software company based in Croatia. We've been in business since 2003, growing steadily, and achieving great business results that have been recognized internationally.
+Why choose Mono?  There are a number of reasons to choose mono: we offer One-stop service, we are No-nonsense, we are committed to Honest communication, we provide Transparency, we are proud of our High quality, and we are Cost-effective.  On top of all that, we have Great partnerships.
+Consulting, requirements gathering and analysis, functional specification, architectural design, UX design, development, testing, deployment, maintenance, support - we’ve got it all covered.
+We don't overcomplicate. Even if the technology and processes behind the scene are very complex, our solutions are simple to use and understand.
+We communicate clearly and openly, even when the news are not good. Our experts provide sound advice on technology and application design options.
+
+PARAGRAPH
+
+We get things done, and our products are consistently delivered on time and budget. A dedicated project management teams monitor all activities and report them back to the client, ensuring that every minute spent on the project is accounted for.
+We build reliable software. Our dedicated team of testers controls the behavior and performance of all products. We follow Continuous Integration practices that allow our teams to move fast while keeping high-quality standards that are checked automatically.
+Custom software development doesn’t need to break the bank. Due to the somewhat lower cost of living in our part of the European Union, our rates are lower. However, our engineers still boast high education, work ethics, English skills, and advanced programming abilities.
+We will go an extra mile to earn trust and become our clients' long-term partner. Some of our partners are with us for more than 10 years, as we spare no effort to meet their needs and support their growth.
+Our clients range from one-person startups to Fortune 500 companies and government organizations from more than 70 countries around the world.
+
+PARAGRAPH
+
+We are the recipients of many notable Awards.
+Mono holds a Gold Microsoft Partner status with Application Development and Independent Software Vendor competencies for more than 10 consecutive years. Gold partners are Microsoft's most highly accredited independent technical support providers.
+We were awarded by Deloitte Technology Fast 50 in Central Europe 2013, a prestigious annual programme that honors the fastest growing Central European technology companies, based on the percentage of revenue growth over the five-year period.
+We are also a National Champion in the organic growth category for The European Business Awards 2014/2015.
+There is so much more about Mono than economic indicators and awards.
+We cherish a great working atmosphere and believe in agile methodologies and continuous delivery. Our teams adapt quickly and efficiently. We are a one-stop provider and can handle all combinations of requirements gathering, architecture design, UX, testing, validation, maintenance, and support. We have an unmatched reputation for delivering responsive, expert and professional support. And, above all, we take a great deal of pride in what we do.
+With great city comes a great community.
+Our hometown is a software development hub with dozens of successful IT companies. Many of us are connected with Osijek Software City—an association which goals are mainly focused on education and providing support for young developers and designers.
+

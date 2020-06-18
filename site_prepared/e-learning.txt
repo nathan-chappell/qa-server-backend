@@ -1,0 +1,8 @@
+We have been building advanced eLearning applications for various educational organizations around the world, delivering customized solutions when off-the-shelf software was not able to offer satisfactory functionality.
+We have built a series of bespoke mobile-friendly eLearning systems for various educational organizations.
+The user interface of these solutions is elegant and intuitive, which keeps both lecturers and students happy and engaged. Simplicity was one of the key factors so that the applications can be used easily, without a steep learning curve.
+A complete set of eLearning features is supported, including tools for course organization, delivering rich content, tracking the learning progress and analyzing students' activity.
+Students can quickly access their tasks, documents, homework, lectures and other material. Messaging, walls, discussion forums, chat/video conferences, and other social networking tools make it easy to communicate and collaborate.
+Based on our experiences with previous projects, we have produced an innovative cloud-based eLearning service: Theor.io. In addition to that, we have been building a cloud-based eLearning and social networking solution for a worldwide community of schools with millions of students.
+Tools and technologies include: ASP.NET MVC, Baasic, MonoX, Angular, SQLServer, React.
+

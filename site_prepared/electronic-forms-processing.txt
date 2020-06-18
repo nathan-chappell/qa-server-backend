@@ -1,0 +1,11 @@
+Mono is building a cloud-based multitenant solution for electronic forms processing and electronic data capture.
+Dynamic forms building, processing, and management
+Our solution for automated forms processing allows users to build and process forms of any structure and complexity and store them in digital format. Users can build custom forms using our dynamic form builder, or use all sorts of paper forms scanned directly into the system.
+Forms are automatically processed, validated and stored within the container hierarchy created by users. To ensure the best document processing features, we have integrated with Abbyy, one of world leading OCR software vendors.
+Transform forms and documents into valuable business data.
+With cloud deployment, there are no upfront investments or ongoing maintenance issues - we take care of everything for you.
+With E.DC, you can significantly improve the quality of the data retrieved from electronic or manual forms. There are options to add constraints on a form that prevent inaccurate values from being entered. Additionally, customers can define their own workflows (i.e., Quality Assurance) and assign tasks to users to check processed data.
+We have developed a specialized module for direct scanning into the E.DC system.
+Data can be exported into all standard file formats. There are various extension points and API methods for integration with other systems and Business Intelligence tools for further processing.
+Tools and technologies: ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS
+

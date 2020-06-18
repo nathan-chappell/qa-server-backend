@@ -1,0 +1,7 @@
+Mono provides a wide range of software solutions developed in Python, spanning complex web applications and machine learning solutions.
+We choose Python for rapid development of feature-rich web applications, taking advantage of the immense quantity and quality of its mature libraries.
+Multiple programming paradigms it supports (object-oriented, functional and aspect-oriented programming) and powerful language features allow us to use Python for developing large and complex software applications. However, it really shines in rapid prototyping and quick MVP delivery.
+We frequently use Python on projects that facilitate data analysis, visualization, and artificial intelligence techniques. From simple applications that run on embedded hardware, to complex machine learning solutions for analyzing MR imagery, Python proves to be an ideal tool for delivering sophisticated solutions quickly and efficiently.
+Our team can build all kinds of software systems according to your specifications using Python and the accompanying tech stack.
+We will also use Python in distributed environments (for example, microservice architecture) for components or services that need its unique advantages (machine learning, data science, etc.).
+Our Python stack: Flask, Zope, Pyramid, Web2py, Requests, Urllib2, SQLAlchemy, Pony, Memcached, NumPy, SciPy, Keras, TensorFlow

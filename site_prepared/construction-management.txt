@@ -1,0 +1,35 @@
+We've built complex web and mobile software solutions to oversee the planning, design, and construction of large-scale real estate projects.
+Web and mobile solutions for managing all aspects of construction projects
+We have included the following features in our construction management systems:
+* Construction diaries where managers can enter various data such as tools used, visitors, weather, etc.
+* Quality assurance workflows which enables issues tracking/logging and communication with contractors while retaining the whole history of communication and changes on particular items.
+* Document management for uploading multiple documents related to specific projects.
+* Directory containing all the staff information grouped into categories.
+* Tenders for sending the data to third-party contractors.
+* Accounts where users can enter suppliers and create purchase orders. Once the purchase is processed, communication between the internal staff is handled by the workflow engine containing the data such as progress statuses and comments.
+        
+Data warehousing solutions for construction management include Web API, web site, web jobs, and windows services, all connected with the Azure Service Bus.
+The software automatically fetches data from multiple external sources (FTP, Odata) and transforms and validates the data to generate reports.
+Reports can be viewed interactively, and users can also perform ad-hoc reporting queries.
+Tools and technologies
+* 
+ASP.NET MVC
+* 
+Baasic
+* 
+Angular
+* 
+SQLServer
+* 
+React
+* 
+Power BI
+* 
+TensorFlow
+* 
+ElasticSearch
+* 
+PostgreSQL
+* 
+Amazon AWS
+
