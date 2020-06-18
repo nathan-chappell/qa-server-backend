@@ -1,0 +1,5 @@
+elasticsearch
+transformers
+torch
+mypy
+termcolor
