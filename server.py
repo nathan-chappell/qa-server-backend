@@ -15,7 +15,7 @@ from transformer_query import gpu_pipeline
 from create_index import get_paragraphs_for_query
 
 routes = web.RouteTableDef()
-readme_path = '../README.md'
+readme_path = 'README.md'
 css_path = './github.css'
 
 with open(readme_path) as file:
