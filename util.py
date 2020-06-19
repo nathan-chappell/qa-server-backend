@@ -75,6 +75,9 @@ def answer_to_complete_sentence(answer: str, paragraph: str) -> str:
     Right now a particularly naive approach is taken, simply looking for
     either \n\n or . before and after the position where the answer is found.
     """
+    # We don't want to mess up the good work bert already did not finding the
+    # answer.
+    if answer == '': return ''
     a_start = paragraph.find(answer)
     if a_start == -1:
         # oh well...
