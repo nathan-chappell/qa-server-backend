@@ -1,9 +1,0 @@
-A platform for rapid web and mobile app development using pre-existing front-end modules and scalable back-end infrastructure.
-Baasic is a full-stack platform-as-a-service, covering both front and back-end aspects of web and mobile application development.
-It can be used with client-side javascript frameworks and all major server-side languages and technologies. You can even bring new life to your static HTML sites. However, we are well aware that one size never really fits all – that's why Baasic allows you to mix and match the right tools for each individual scenario.
-You don't have to start from scratch. Choose from a wide range of web or mobile application startup kits, ranging from simple sites to complex applications, all free and open-sourced.
-Use and customize built-in modules. If that isn't enough, you can create your own front-end components based on customized data models and make them first-class citizens in your applications.
-Use the tools you know and love. Baasic comes with an SDK for the language or framework you already use, so you never need to leave your comfort zone.
-Create as many applications as you want, scale them as needed. Set yourself free from server-side infrastructure setup and maintenance headaches. Small or large, we have you covered.
-
-

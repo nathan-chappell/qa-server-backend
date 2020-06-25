@@ -1,9 +1,0 @@
-We developed cloud-based real estate systems to satisfy specific business scenarios in the real estate industry, catering to the needs of real estate agents and their customers.
-Our goal was to develop an intuitive and user-friendly software solution for listing and presentation of different property types. Besides the responsive design and fully customizable back-end engine, we were focused on the integration of the real estate listings with various mapping and geolocation services.
-We have also developed a service for retrieving and automatic processing of listings and the accompanying resources (photos, documents) using third-party APIs used by different Multiple Listing Services (MLS).
-Our solution enables users to keep a complete overview of all client activities and build a detailed understanding of their preferences.
-A wealth of information sharing features promotes collaboration for the entire sales team.
-A customized reporting engine with intuitive dashboards allows users to visualize all relevant business data and use it for better decision making.
-Custom workflows cover all processes and tasks inside real-estate companies, from client interactions to back-office procedures.
-Tools and technologies: ASP.NET MVC, Baasic, Angular, SQLServer, React, Power BI, TensorFlow, ElasticSearch, PostgreSQL, Amazon AWS
-

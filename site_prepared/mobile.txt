@@ -1,8 +1,0 @@
-Mono development team can build mobile apps for every platform and purpose, using a wide array of cross-platform tools.
-We have started building mobile apps for iOS and Android platform using native development tools (Objective-C and Swift for iOS and Java for Android).
-More recently we have switched most of our projects to cross-development tools, using write-once-run-anywhere approach. Our mobile app projects share great amounts of code between platforms, enabling us to deliver mobile solutions at a fraction of the time and cost needed to build separate versions for each platform.
-In parallel with native development tools, we started using the first generation cross-platform JavaScript tools - PhoneGap and Ionic - a while ago. Their performance was not spectacular, so we switched to Xamarin quickly, as it was much better in terms of performance and functionality. It has also allowed us to utilize our large base of experienced C# developers to cover desktop, Web and mobile application development using a single set of tools.
-As React Native gained wider adoption, we started to use it in parallel with Xamarin; once again we were able to reuse our existing knowledge of JavaScript to build advanced mobile apps.
-More recently, we have started using Flutter and Dart to build fast and powerful mobile solutions, as it introduces additional performance improvements for developers.
-We have mastered a wide array of mobile development tools and can implement all kinds of mobile software solutions per your specifications. Usage of cross-platform tools allows us to cover multiple platforms quickly and efficiently.
-Our mobile stack: Objective-C, Swift, Java, Xamarin, C#, React Native, Flutter
