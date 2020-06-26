@@ -16,9 +16,9 @@ from aiohttp.web_middlewares import _Handler
 from markdown import markdown # type: ignore
 
 from util import answer_to_complete_sentence, INDEX_NAME, SOURCE_DIR
-from util import named_locks, log
+from util import named_locks, log, es
 from transformer_query import gpu_pipeline
-from create_index import get_paragraphs_for_query, index_all
+from create_index import get_paragraphs_for_query, index_all, index_one
 from canned_answer import no_answer, quick_answer_for_error, get_happy_employee
 from git_crud import GitClient
 
@@ -42,8 +42,8 @@ with open(readme_path) as file:
 with open(css_path) as file:
     css = file.read()
 
-print('md:')
-print(md)
+#print('md:')
+#print(md)
 
 readme = f"""
 <!doctype html>
@@ -134,7 +134,7 @@ async def exception_to_json_middleware(
     except to_json_exceptions as e:
         return web.json_response(exception_to_dict(e))
     except Exception as e:
-        print(e)
+        log.error(e)
         return web.json_response({'whoops!':str(e)},status=500)
 
 @web.middleware
@@ -291,6 +291,10 @@ async def answer_question(request: Request) -> Response:
     response['quick_answer'] = get_quick_answer(response['answers'])
     return json_response(response)
 
+#
+# CRUD and webhook
+#
+
 @routes.post('/webhook')
 async def handle_webhook(request: Request) -> Response:
     body = await request.json()
@@ -302,6 +306,36 @@ async def handle_webhook(request: Request) -> Response:
         await index_all(INDEX_NAME)
         log.info('index all complete')
     return Response(status=200)
+
+@routes.post('/index')
+async def create_update(request: Request) -> Response:
+    """Dispatch create and update requests"""
+    body = await request.json()
+    command = body.get('command',None)
+    if command == 'create':
+        docId = body['docId']
+        text = body['text']
+        git_response = await git_client.create(text,docId)
+        index_one(INDEX_NAME, text, docId)
+        return git_response
+    elif command == 'update':
+        docId = body['docId']
+        docs = body['docs']
+        git_response = await git_client.update(docId, docs)
+        await index_all(INDEX_NAME)
+        return git_response
+    else:
+        msg = "require a 'command' with value 'create' or 'update'"
+        raise APIError(request, msg)
+
+@routes.delete('/index')
+async def delete(request: Request) -> Response:
+    """Dispatch create and update requests"""
+    query = request.query
+    docId = query.get('docId')
+    git_response = await git_client.delete(docId)
+    es.delete(index=INDEX_NAME,id=docId)
+    return git_response
 
 #
 # Server Boilerplate

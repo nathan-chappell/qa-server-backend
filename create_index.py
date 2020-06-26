@@ -45,21 +45,26 @@ def get_hash(s: Paragraph) -> str:
     """
     return md5(bytes(s, encoding='utf-8')).hexdigest()
 
-# Make sure caller has a lock!
+# This used to lock, its only use case caused a deadlock...
 def create_index_with_stemmer(index: str):
     """Create index with name using custom text analysis."""
-    with named_locks[index]:
-        myanalyzer = {
-            'type': 'custom',
-            'tokenizer': 'standard',
-            'filter': ['asciifolding','lowercase','porter_stem']
-        }
-        body = {
-            'settings': {'analysis': {'analyzer': {ANALYZER_NAME: myanalyzer}}},
-            'mappings': {'properties': {
-                    'text': {'type': 'text', 'analyzer':'myanalyzer'},
-                    'hash': {'type': 'keyword'}}}}
-        es.indices.create(index=index,body=body)
+    myanalyzer = {
+        'type': 'custom',
+        'tokenizer': 'standard',
+        'filter': ['asciifolding','lowercase','porter_stem']
+    }
+    body = {
+        'settings': {'analysis': {'analyzer': {ANALYZER_NAME: myanalyzer}}},
+        'mappings': {'properties': {
+                'text': {'type': 'text', 'analyzer':'myanalyzer'},
+                'hash': {'type': 'keyword'}}}}
+    es.indices.create(index=index,body=body)
+
+def index_one(index: str, paragraph: Paragraph, docId: str):
+    _id = docId
+    _hash = get_hash(paragraph)
+    body = {'text':paragraph, 'hash': _hash}
+    es.index(index=index, body=body, id=_id)
 
 async def index_all(index: str):
     """Create a new index and index all paragraphs.
@@ -67,27 +72,20 @@ async def index_all(index: str):
     If the name of the index contains the string `stem`, it will be created
     using the function `create_index_with_stemmer`.
     """
-    log.info(f'creating index named: {index}')
     async with named_locks[index]:
+        log.info(f'creating index named: {index}')
         if es.indices.exists(index=index):
-            es.delete(index=index)
+            es.indices.delete(index=index)
             log.info(f'deleted index: {index}')
         if 'stem' in index:
             create_index_with_stemmer(index)
         else:
             es.indices.create(index=index)
+        log.info(f'created index: {index}')
         data = await get_paragraphs()
         for paragraph,filename in data:
-            # we were indexing with _id before in order to update the documents
-            # rather than add new ones if we ran `index_all` more than once.
-            # Probably not necessary anymore since we `delete_if_exists`.
-            #
-            # TODO: remove/ decide what to do
-            #
-            _id = filename
-            _hash = get_hash(paragraph)
-            body = {'text':paragraph, 'hash': _hash}
-            es.index(index=index, body=body, id=_id)
+            index_one(index, paragraph, filename)
+        log.info(f'done indexing paragraphs')
 
 async def get_paragraphs_for_query(
         query: str, index: str, topk=3
