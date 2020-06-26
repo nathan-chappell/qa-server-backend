@@ -7,6 +7,7 @@ from typing import Dict, Any, List, Iterable, Union, cast
 from json.decoder import JSONDecodeError
 import atexit
 import json
+from pprint import pprint
 
 from aiohttp import web
 from aiohttp.web import Request, Response, json_response
@@ -14,11 +15,15 @@ from aiohttp.web import HTTPInternalServerError
 from aiohttp.web_middlewares import _Handler
 from markdown import markdown # type: ignore
 
-from util import answer_to_complete_sentence, INDEX_NAME
+from util import answer_to_complete_sentence, INDEX_NAME, SOURCE_DIR
+from util import named_locks, log
 from transformer_query import gpu_pipeline
-from create_index import get_paragraphs_for_query
+from create_index import get_paragraphs_for_query, index_all
 from canned_answer import no_answer, quick_answer_for_error, get_happy_employee
+from git_crud import GitClient
 
+
+git_client = GitClient(SOURCE_DIR, lock=named_locks[SOURCE_DIR])
 routes = web.RouteTableDef()
 
 #
@@ -285,6 +290,18 @@ async def answer_question(request: Request) -> Response:
         raise AnswerError(e, question)
     response['quick_answer'] = get_quick_answer(response['answers'])
     return json_response(response)
+
+@routes.post('/webhook')
+async def handle_webhook(request: Request) -> Response:
+    body = await request.json()
+    log.info('handling webhook')
+    #pprint(body)
+    if body.get('event_name',None) == 'push':
+        await git_client.pull()
+        log.info('pull complete')
+        await index_all(INDEX_NAME)
+        log.info('index all complete')
+    return Response(status=200)
 
 #
 # Server Boilerplate

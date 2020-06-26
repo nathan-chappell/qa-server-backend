@@ -14,7 +14,7 @@ import asyncio
 from elasticsearch import Elasticsearch # type: ignore
 
 from util import Paragraph, INDEX_NAME, ANALYZER_NAME
-from util import named_locks, es, loop, SOURCE_DIR
+from util import named_locks, es, loop, SOURCE_DIR, log
 
 class ParagraphInfo(NamedTuple):
     text: str
@@ -67,9 +67,11 @@ async def index_all(index: str):
     If the name of the index contains the string `stem`, it will be created
     using the function `create_index_with_stemmer`.
     """
+    log.info(f'creating index named: {index}')
     async with named_locks[index]:
         if es.indices.exists(index=index):
             es.delete(index=index)
+            log.info(f'deleted index: {index}')
         if 'stem' in index:
             create_index_with_stemmer(index)
         else:
@@ -84,7 +86,8 @@ async def index_all(index: str):
             #
             _id = filename
             _hash = get_hash(paragraph)
-            es.index(index=index, id=_id, body={'text':paragraph, 'hash': _hash})
+            body = {'text':paragraph, 'hash': _hash}
+            es.index(index=index, body=body, id=_id)
 
 async def get_paragraphs_for_query(
         query: str, index: str, topk=3

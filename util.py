@@ -9,6 +9,7 @@ from typing import List, Set, DefaultDict
 from collections import defaultdict
 import asyncio
 from asyncio import Lock
+import logging
 
 from elasticsearch import Elasticsearch # type: ignore
 #from elasticsearch import NotFoundError, RequestError
@@ -18,7 +19,7 @@ from elasticsearch import Elasticsearch # type: ignore
 # default name of elasticsearch index
 INDEX_NAME = 'site-txt-stem'
 ANALYZER_NAME = 'myanalyzer'
-SOURCE_DIR = './source_docs'
+SOURCE_DIR = './mono-qa-knowledge-base'
 
 es = Elasticsearch()
 named_locks: DefaultDict[str,Lock] = defaultdict(Lock)
@@ -26,6 +27,26 @@ loop = asyncio.get_event_loop()
 
 # Common Types:
 Paragraph = str
+
+#log_format = '[%(levelname)s]    %(filename)s:%(lineno)d:%(funcName)s  %(message)s'
+class LoggingFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        message = record.getMessage()
+        #print(f'formatting message: {message}')
+        lines: List[str] = list(map(str.strip,re.split("\n", message)))
+        lines = list(filter(lambda s: s.strip() != '', lines))
+        formatted = f'[{record.levelname}] [{record.filename}:{record.lineno}]'
+        if len(lines) == 0:
+            return formatted
+        elif len(lines) == 1:
+            return f'{formatted} - {lines[0]}'
+        else:
+            eol = "\n" + ' '*4 + '-'*4 + ' '*4
+            return formatted + eol + eol.join(lines)
+        
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger()
+log.handlers[0].setFormatter(LoggingFormatter())
 
 def highlight(string: str, to_highlight: Set[str], color: str) -> str:
     """Ansi-escape string so that all substrings appear with given color."""
