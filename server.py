@@ -14,7 +14,7 @@ from aiohttp.web import HTTPInternalServerError
 from aiohttp.web_middlewares import _Handler
 from markdown import markdown # type: ignore
 
-from util import answer_to_complete_sentence
+from util import answer_to_complete_sentence, INDEX_NAME
 from transformer_query import gpu_pipeline
 from create_index import get_paragraphs_for_query
 from canned_answer import no_answer, quick_answer_for_error, get_happy_employee
@@ -104,7 +104,7 @@ def exception_to_dict(exception: Exception) -> Dict[str,Any]:
     """Convert an exception into a dict for JSON response."""
     return {'error_type': type(exception).__name__, 'message': str(exception)}
 
-exception_to_json_exceptions = (
+to_json_exceptions = (
     JSONDecodeError,
     KeyError,
     RuntimeError,
@@ -126,11 +126,11 @@ async def exception_to_json_middleware(
     """Catch listed exceptions and convert them to json responses."""
     try:
         return await handler(request)
-    except exception_to_json_exceptions as e:
+    except to_json_exceptions as e:
         return web.json_response(exception_to_dict(e))
-    except exception as e:
+    except Exception as e:
         print(e)
-        return web.json_response({'whoops!':str(e)})
+        return web.json_response({'whoops!':str(e)},status=500)
 
 @web.middleware
 async def answer_exception_middleware(
@@ -247,7 +247,7 @@ async def get_answers(query: str) -> List[Dict[str,Any]]:
     if happy_employee is not None:
         return [make_answer(happy_employee)]
     #
-    paragraphs = get_paragraphs_for_query(query, topk=5)
+    paragraphs = await get_paragraphs_for_query(query, INDEX_NAME, topk=5)
     for rank,paragraph in enumerate(paragraphs):
         context = paragraph['text']
         answer = gpu_pipeline({'question': query, 'context': context},

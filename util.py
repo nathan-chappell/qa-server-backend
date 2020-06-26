@@ -5,7 +5,10 @@ Hodgepodge of utility functions and cross script dependencies
 import re
 import sys
 from termcolor import colored
-from typing import List, Set
+from typing import List, Set, DefaultDict
+from collections import defaultdict
+import asyncio
+from asyncio import Lock
 
 from elasticsearch import Elasticsearch # type: ignore
 #from elasticsearch import NotFoundError, RequestError
@@ -15,7 +18,11 @@ from elasticsearch import Elasticsearch # type: ignore
 # default name of elasticsearch index
 INDEX_NAME = 'site-txt-stem'
 ANALYZER_NAME = 'myanalyzer'
-es =  Elasticsearch()
+SOURCE_DIR = './source_docs'
+
+es = Elasticsearch()
+named_locks: DefaultDict[str,Lock] = defaultdict(Lock)
+loop = asyncio.get_event_loop()
 
 # Common Types:
 Paragraph = str
@@ -67,6 +74,8 @@ def print_paragraph(paragraph: Paragraph, query: str, answer: str):
     if line != '': 
         print(' '*15 + highlight(line, query_tokens, 'red'))
 
+# TODO
+# make this suck less.
 def answer_to_complete_sentence(answer: str, paragraph: str) -> str:
     r"""Convert an answer into a complete sentence.
 

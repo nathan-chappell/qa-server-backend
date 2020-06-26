@@ -7,32 +7,33 @@ Run this script to create the index, and import the function
 """
 
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, NamedTuple
 from hashlib import md5
+import asyncio
 
 from elasticsearch import Elasticsearch # type: ignore
 
 from util import Paragraph, INDEX_NAME, ANALYZER_NAME
+from util import named_locks, es, loop, SOURCE_DIR
 
-# globals
+class ParagraphInfo(NamedTuple):
+    text: str
+    filename: str
 
-es = Elasticsearch()
-
-def get_paragraphs(paragraphs_dir: str, split_token: str) -> List[Paragraph]:
-    """Return split paragraphs from site.
-    
-    arguments:
-    paragraphs_dir - directory where paragraphs are located
-    split_token - token used to split paragraphs in files
-    """
-    path = Path(paragraphs_dir)
-    result = []
-    for filename in path.glob('*.txt'):
-        print(f'processing: {filename}')
-        with open(filename,encoding='cp1250') as file:
-            result.extend(file.read().split(split_token))
-    result = list(map(str.strip,result))
-    return result
+async def get_paragraphs() -> List[ParagraphInfo]:
+    """Turn return a list of strings - each .txt file from the directory"""
+    async with named_locks['source_docs']:
+        path = Path(SOURCE_DIR)
+        result: List[ParagraphInfo] = []
+        for filename in path.glob('*.txt'):
+            print(f'processing: {filename}')
+            #
+            # TODO: check for encoding errors
+            #
+            with open(filename) as file:
+                text = file.read()
+                result.append(ParagraphInfo(text,filename.name))
+        return result
 
 def get_hash(s: Paragraph) -> str:
     """
@@ -44,79 +45,71 @@ def get_hash(s: Paragraph) -> str:
     """
     return md5(bytes(s, encoding='utf-8')).hexdigest()
 
-def get_id(paragraph: Paragraph, index: str) -> Optional[str]:
-    """Get the elasticsearch _id for a paragraph."""
-    body = {'query': {'term': {'hash': get_hash(paragraph)}}}
-    reply = es.search(index=index, body=body)
-    if reply['hits']['total']['value'] > 0:
-        return reply['hits']['hits'][0]['_id']
-    else:
-        return None
-
-def delete_if_exists(index: str):
-    if es.indices.exists(index=index):
-        es.delete(index=index)
-
+# Make sure caller has a lock!
 def create_index_with_stemmer(index: str):
     """Create index with name using custom text analysis."""
-    delete_if_exists(index)
-    myanalyzer = {
-        'type': 'custom',
-        'tokenizer': 'standard',
-        'filter': ['asciifolding','lowercase','porter_stem']
-    }
-    body = {
-        'settings': {'analysis': {'analyzer': {ANALYZER_NAME: myanalyzer}}},
-        'mappings': {'properties': {
-                'text': {'type': 'text', 'analyzer':'myanalyzer'},
-                'hash': {'type': 'keyword'}}}}
-    es.indices.create(index=index,body=body)
+    with named_locks[index]:
+        myanalyzer = {
+            'type': 'custom',
+            'tokenizer': 'standard',
+            'filter': ['asciifolding','lowercase','porter_stem']
+        }
+        body = {
+            'settings': {'analysis': {'analyzer': {ANALYZER_NAME: myanalyzer}}},
+            'mappings': {'properties': {
+                    'text': {'type': 'text', 'analyzer':'myanalyzer'},
+                    'hash': {'type': 'keyword'}}}}
+        es.indices.create(index=index,body=body)
 
-def index_all(paragraphs: List[Paragraph], index: str = INDEX_NAME):
+async def index_all(index: str):
     """Create a new index and index all paragraphs.
     
     If the name of the index contains the string `stem`, it will be created
     using the function `create_index_with_stemmer`.
     """
-    if 'stem' in index:
-        create_index_with_stemmer(index)
-    else:
-        delete_if_exists(index)
-        es.indices.create(index=index)
-    for paragraph in paragraphs:
-        # we were indexing with _id before in order to update the documents
-        # rather than add new ones if we ran `index_all` more than once.
-        # Probably not necessary anymore since we `delete_if_exists`.
-        #
-        # TODO: remove/ decide what to do
-        #
-        _id = get_id(paragraph, index)
-        _hash = get_hash(paragraph)
-        es.index(index=index, id=_id, body={'text':paragraph, 'hash': _hash})
+    async with named_locks[index]:
+        if es.indices.exists(index=index):
+            es.delete(index=index)
+        if 'stem' in index:
+            create_index_with_stemmer(index)
+        else:
+            es.indices.create(index=index)
+        data = await get_paragraphs()
+        for paragraph,filename in data:
+            # we were indexing with _id before in order to update the documents
+            # rather than add new ones if we ran `index_all` more than once.
+            # Probably not necessary anymore since we `delete_if_exists`.
+            #
+            # TODO: remove/ decide what to do
+            #
+            _id = filename
+            _hash = get_hash(paragraph)
+            es.index(index=index, id=_id, body={'text':paragraph, 'hash': _hash})
 
-def get_paragraphs_for_query(query: str, index=INDEX_NAME, topk=3) -> List[Dict[str,Any]]:
+async def get_paragraphs_for_query(
+        query: str, index: str, topk=3
+    ) -> List[Dict[str,Any]]:
     """Retrieve paragraphs from elasticsearch using query as search term.
 
     By default, uses the index `INDEX_NAME` and returns the top 3 results.
     """
-    body = {'query':{'match':{'text':query}}, 'size':topk}
-    reply = es.search(index=index, body=body)
-    if reply['hits']['total']['value'] == 0:
-        return []
-    else:
-        def get_hit(hit):
-            return {'text': hit['_source']['text'], '_id': hit['_id']}
-        hits = reply['hits']['hits']
-        return list(map(get_hit, hits))
+    async with named_locks[index]:
+        body = {'query':{'match':{'text':query}}, 'size':topk}
+        reply = es.search(index=index, body=body)
+        if reply['hits']['total']['value'] == 0:
+            return []
+        else:
+            def get_hit(hit):
+                return {'text': hit['_source']['text'], '_id': hit['_id']}
+            return [get_hit(hit) for hit in reply['hits']['hits']]
 
 if __name__ == '__main__':
     # directory containing the paragraphs for the site
-    paragraphs_dir = './site_prepared'
-    # the "paragraph splitter" that is located in the site paragraphs
-    split_token = 'PARAGRAPH'
-    paragraphs = get_paragraphs(paragraphs_dir, split_token)
-    for p in paragraphs:
-        print('-'*30)
+    # this is a coroutine because someone else might be modifying the
+    # paragraphs when we want to retrieve them...
+    paragraphs = loop.run_until_complete(get_paragraphs())
+    for p,fn in paragraphs:
+        print('-'*10 + fn + '-'*10)
         print(f'len: {len(p.split()):4}')
         print(p[:40])
-    index_all(paragraphs, index=INDEX_NAME)
+    index_all(index=INDEX_NAME)
