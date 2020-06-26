@@ -18,16 +18,34 @@ from aiohttp.web import Response, json_response
 #except ImportError:
 
 named_locks: DefaultDict[str,Lock] = defaultdict(Lock)
+# should be an initialized git repo!
 SOURCE_DIR = './source_docs'
 
-log_format = '%(filename)s:%(lineno)d:%(funcName)s  %(message)s'
-logging.basicConfig(format=log_format, level=logging.DEBUG)
+#log_format = '[%(levelname)s]    %(filename)s:%(lineno)d:%(funcName)s  %(message)s'
+class Formatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        message = record.getMessage()
+        #print(f'formatting message: {message}')
+        lines = map(str.strip,re.split("\n", message))
+        lines = list(filter(lambda s: s.strip() != '', lines))
+        formatted = f'[{record.levelname}] [{record.filename}:{record.lineno}]'
+        if len(lines) == 0:
+            return formatted
+        elif len(lines) == 1:
+            return f'{formatted} - {lines[0]}'
+        else:
+            eol = "\n" + ' '*4 + '-'*4 + ' '*4
+            return formatted + eol + eol.join(lines)
+        
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger()
+log.handlers[0].setFormatter(Formatter())
 
 Doc = str
 DocId = str
 
-GIT_CMD = ['git','-C',SOURCE_DIR]
+def GIT_CMD() -> List[str]:
+    return ['git','-C',SOURCE_DIR]
 
 loop = asyncio.get_event_loop()
 
@@ -67,7 +85,7 @@ class GitCommitError(GitError): pass
 
 async def _git_dispatch(args, GitErrorClass, *, log_error=True, reset=False):
     git = await asyncio.create_subprocess_exec(
-            *GIT_CMD, *args,
+            'git','-C',SOURCE_DIR, *args,
             stdin=PIPE, stdout=PIPE, stderr=PIPE
         )
     await git.wait()
@@ -81,9 +99,7 @@ async def _git_dispatch(args, GitErrorClass, *, log_error=True, reset=False):
         raise GitErrorClass(args)
     else:
         out = await git.stdout.read()
-        out = out.decode('utf-8')
-        if out != '':
-            log.info(out)
+        log.info(out.decode('utf-8'))
 
 async def git_add(docId: DocId):
     await _git_dispatch(('add',docId), GitAddError, reset=True)
@@ -180,52 +196,61 @@ async def _delete(docId: DocId) -> Response:
 
 async def _read(docId: DocId) -> Response:
     """Retrieve docId (including wildcards)"""
-    path = check_path(docId, should_exist=True)
-    if isinstance(path, Response):
-        return path
-    else:
-        path = cast(Path, path)
+    paths: Iterable[Path]
+    print(SOURCE_DIR)
+    source_dir = Path(SOURCE_DIR)
+    paths = list(source_dir.glob(docId))
+    paths = list(filter(lambda path: path.name.endswith('.txt'), paths))
+    docs: List[Doc] = []
+    for path in paths:
         with open(path) as file:
-            text = file.read()
-            data = {'docId': docId, 'text':text}
-            return json_response(data)
+            docs.append(file.read())
+    docs = [{'docId':path.name, 'text': doc} 
+            for path,doc in zip(paths,docs)]
+    data = { 'docs': docs }
+    return json_response(data)
+
+def get_path_sequence(docId: DocId, n: int) -> List[Path]:
+    # Cheap, but hackey
+    # get new path - sequence...
+    stem = re.sub(r'(.*)(?:\.\w*)?.txt', r'\1', docId)
+    paths: List[Path] = []
+    j = 0
+    while j == 0 or any(map(Path.exists, paths)) and j < 100:
+        uid = str(uuid4())[:6]
+        paths = [Path(SOURCE_DIR) / (f'{stem}.{i}.{uid}.txt') 
+                 for i in range(n)]
+        j += 1
+    if j == 100:
+        raise RuntimeError('failed to get new path sequence')
+    return paths
 
 async def _update(docId: DocId, docs: Union[Doc,List[Doc]]) -> Response:
     """Update paragraph in source_dir, and reindex"""
-    path = check_path(docId, should_exist=True)
-    if isinstance(path, Response):
-        return path
+    path_or_response = check_path(docId, should_exist=True)
+    if isinstance(path_or_response, Response):
+        return path_or_response
     else:
-        docs_: List[Doc]
         if isinstance(docs, Doc):
-            docs_ = [docs]
-        else:
-            docs_ = cast(List[Doc],docs)
+            docs = [docs]
         try:
-            # Cheap, but hackey
-            # get new path - sequence...
-            uid = str(uuid4())[:8]
-            path_ = Path(SOURCE_DIR) / (path.stem + f'.{uid}.{0}.txt')
-            j = 0
-            while path_.exists() and j < 100:
-                uid = str(uuid4())[:8]
-                path_ = Path(SOURCE_DIR) / (path.stem + f'.{uid}.{0}.txt')
-            if j == 100:
+            docs = cast(List[Doc], docs)
+            try:
+                paths: List[Path] = get_path_sequence(docId, len(docs))
+            except RuntimeError:
                 reason = "couldn't create a unique filename"
                 log.error(f'update failure: {reason}')
                 return Response(status=500, reason=reason)
             # write new files
-            path_names: List[str] = []
-            for i,doc in enumerate(docs_):
-                path_name = path.stem + f'.{uid}.{i}.txt'
-                path_names.append(path_name)
-                with open(Path(SOURCE_DIR) / path_name,'w') as file:
-                    file.write(doc)
+            for path, doc in zip(paths, docs):
+                with open(path,'w') as file:
+                    print(doc, file=file)
             # update git index
+            path_names: List[str] = [path.name for path in paths]
             for path_name in path_names:
                 await git_add(path_name)
             await git_rm(docId)
-            msg = f'updated {docId} to {path_names[0]} .. {len(path_names)}'
+            msg = f'updated {docId} to {path_names[0]} ..  {len(path_names)}'
             await git_commit(msg)
             reason = f'update success: {docId}'
             log.info(reason)
@@ -234,7 +259,6 @@ async def _update(docId: DocId, docs: Union[Doc,List[Doc]]) -> Response:
         except GitError as e:
             log.error(e)
             return e.response
-                
 
 create = initialize_with_lock(_create)
 read = initialize_with_lock(_read)
@@ -242,19 +266,41 @@ update = initialize_with_lock(_update)
 delete = initialize_with_lock(_delete)
 
 async def test():
+    global SOURCE_DIR
     import json
-    response = await create("this is a test",'test.txt')
-    print(f"{response}")
-    response = await update('test.txt','yo momma so fat')
-    body = json.loads(response.body)
-    print(f"{response}, {body}")
-    docId = body['docIds'][0]
-    response = await read(docId)
-    body = json.loads(response.body)
-    print(f"{response}, {body}")
-    response = await delete(docId)
-    print(f"{response}")
+    import subprocess
+    SOURCE_DIR = str(uuid4())
+    source_dir = Path(SOURCE_DIR)
+    if source_dir.exists():
+        raise RuntimeError(f'about to step on {SOURCE_DIR}')
+    try:
+        subprocess.run(['mkdir', SOURCE_DIR], check=True)
+        subprocess.run(['git', '-C', SOURCE_DIR, 'init'], check=True)
 
+        response = await create("this is a test",'test.txt')
+        print(f"{response}")
+
+        response = await update('test.txt',['this aint no test!', 'yo momma so fat'])
+        try:
+            body = json.loads(response.body)
+        except:
+            print('[JSON]: ' + response.body)
+        print(f"{response}, {body}")
+        docIds = body['docIds']
+
+        response = await read('*')
+        body = json.loads(response.body)
+        print(f"{response}, {body}")
+
+        for docId in docIds:
+            response = await read(docId)
+            body = json.loads(response.body)
+            print(f"{response}, {body}")
+
+            response = await delete(docId)
+            print(f"{response}")
+    finally:
+        subprocess.run(['rm','-rf',SOURCE_DIR],check=True)
 
 if __name__ == '__main__':
     loop.run_until_complete(test())
