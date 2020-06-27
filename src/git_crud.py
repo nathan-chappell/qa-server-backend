@@ -106,7 +106,6 @@ async def git_pull(git_dir: str):
     await _git_dispatch(git_dir, ('pull','origin','master'), GitError)
     log.info(f'git SUCCESS: [init]')
 
-
 def get_new_path(git_dir: str, doc: Doc, name: Optional[DocId]) -> Optional[Path]:
     """Get a path for creating a new paragraph in the source.
 
@@ -167,8 +166,11 @@ def check_path(git_dir: str, docId: DocId, should_exist: bool) -> Union[Response
         return Response(status=404, reason=reason)
     return None
 
-async def _delete(git_dir: str, docId: DocId) -> Response:
+async def _delete(git_dir: str, docId: Union[List[DocId],DocId]) -> Response:
     """Delete paragraph from git_dir, and reindex"""
+    if isinstance(docId,list):
+        return await _delete_multi(git_dir, docId)
+    docId = cast(DocId, docId)
     path = check_path(git_dir, docId, should_exist=True)
     if isinstance(path, Response):
         return path
@@ -184,11 +186,25 @@ async def _delete(git_dir: str, docId: DocId) -> Response:
     except GitError as e:
         return e.response
 
-async def _read(git_dir: str, docId: DocId) -> Response:
+async def _delete_multi(git_dir: str, docIds: List[DocId]) -> Response:
+    """Delete paragraph from git_dir, and reindex"""
+    errors = []
+    for docId in docIds:
+        response = await _delete(git_dir, docId)
+        if response.status != 200:
+            errors.append(response.reason)
+    return json_response({'errors':errors})
+
+async def _read(git_dir: str, docId: Union[DocId,List[DocId]]) -> Response:
     """Retrieve docId (including wildcards)"""
-    paths: Iterable[Path]
+    paths: List[Path] = []
     git_path = Path(git_dir)
-    paths = list(git_path.glob(docId))
+    if isinstance(docId, DocId):
+        docIds = [cast(DocId,docId)]
+    else:
+        docIds = cast(List[DocId],docId)
+    for docId in docIds:
+        paths.extend(list(git_path.glob(docId)))
     paths = list(filter(lambda path: path.name.endswith('.txt'), paths))
     docs: List[Dict[str,str]] = []
     for path in paths:
@@ -200,8 +216,12 @@ async def _read(git_dir: str, docId: DocId) -> Response:
 def get_path_sequence(git_dir: str, docId: DocId, n: int) -> List[Path]:
     # Cheap, but hackey
     # get new path - sequence...
+    if n == 1:
+        return [Path(git_dir) / docId]
     stem = re.sub(r'(.*)(?:\.\w*)?.txt', r'\1', docId)
-    paths: List[Path] = []
+    #paths: List[Path] = []
+    paths: List[Path] = [Path(git_dir) / (f'{stem}.{i}.txt')
+                         for i in range(n)]
     j = 0
     while j == 0 or any(map(Path.exists, paths)) and j < 100:
         uid = str(uuid4())[:6]
@@ -217,35 +237,41 @@ async def _update(git_dir: str, docId: DocId, docs: Union[Doc,List[Doc]]) -> Res
     path_or_response = check_path(git_dir, docId, should_exist=True)
     if isinstance(path_or_response, Response):
         return path_or_response
-    else:
+    try:
+        # many vs one...
+        paths: List[Path]
         if isinstance(docs, Doc):
             docs = [docs]
-        try:
+            paths = [Path(git_dir) / docId]
+        else:
             docs = cast(List[Doc], docs)
             try:
-                paths: List[Path] = get_path_sequence(git_dir, docId, len(docs))
+                paths = get_path_sequence(git_dir, docId, len(docs))
             except RuntimeError:
                 reason = "couldn't create a unique filename"
                 log.error(f'update failure: {reason}')
                 return Response(status=500, reason=reason)
-            # write new files
-            for path, doc in zip(paths, docs):
-                with open(path,'w') as file:
-                    print(doc, file=file)
-            # update git index
-            path_names: List[str] = [path.name for path in paths]
-            for path_name in path_names:
-                await git_add(git_dir, path_name)
+        # write new files
+        for path, doc in zip(paths, docs):
+            with open(path, 'w') as file:
+                print(doc, file=file)
+        # update git index
+        path_names: List[str] = [path.name for path in paths]
+        for path_name in path_names:
+            await git_add(git_dir, path_name)
+        # many vs one...
+        # If more than one, then the original needs to be removed
+        if len(paths) > 1:
             await git_rm(git_dir, docId)
-            msg = f'updated {docId} to {path_names[0]} ..  {len(path_names)}'
-            await git_commit(git_dir, msg)
-            reason = f'update success: {docId}'
-            log.info(reason)
-            data = {'docIds': path_names}
-            return json_response(data, reason=reason)
-        except GitError as e:
-            log.error(e)
-            return e.response
+        msg = f'updated {docId} to {path_names[0]} ..  {len(path_names)-1}'
+        await git_commit(git_dir, msg)
+        reason = f'update success: {docId}'
+        log.info(reason)
+        data = {'docIds': path_names}
+        return json_response(data, reason=reason)
+    except GitError as e:
+        log.error(e)
+        return e.response
 
 AsyncMethod = Callable[..., Coroutine[Any,Any,Response] ]
 
@@ -285,6 +311,7 @@ class GitClient:
         self.lock = lock
         self.initialized = False
 
+    @acquire_lock
     async def initialize(self, *args):
         if self.initialized: return
         path = Path(self.source_dir)
@@ -298,27 +325,22 @@ class GitClient:
             await git_init(self.source_dir, *args)
         self.initialized = True
 
-    @acquire_lock
     @check_initialized
     async def create(self, *args) -> Response:
         return await _create(self.source_dir, *args)
 
-    @acquire_lock
     @check_initialized
     async def read(self, *args) -> Response:
         return await _read(self.source_dir, *args)
 
-    @acquire_lock
     @check_initialized
     async def update(self, *args) -> Response:
         return await _update(self.source_dir, *args)
 
-    @acquire_lock
     @check_initialized
     async def delete(self, *args) -> Response:
         return await _delete(self.source_dir, *args)
 
-    @acquire_lock
     @check_initialized
     async def pull(self, *args) -> Response:
         return await git_pull(self.source_dir, *args)

@@ -21,14 +21,15 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 # cpu_model = AutoModelForQuestionAnswering.from_pretrained(model_name)
 # cpu_pipeline = QuestionAnsweringPipeline(model=cpu_model, tokenizer=tokenizer)
 
-gpu_model = AutoModelForQuestionAnswering.from_pretrained(model_name)
-gpu_model.cuda()
-gpu_model.eval()
-gpu_pipeline = QuestionAnsweringPipeline(model=gpu_model, tokenizer=tokenizer, device=0)
+model = AutoModelForQuestionAnswering.from_pretrained(model_name)
+#model.cuda()
+model.eval()
+#pipeline = QuestionAnsweringPipeline(model=model, tokenizer=tokenizer, device=0)
+pipeline = QuestionAnsweringPipeline(model=model, tokenizer=tokenizer, device=-1)
 
 def query(
         _query: str,
-        pipeline: QuestionAnsweringPipeline = gpu_pipeline,
+        pipeline: QuestionAnsweringPipeline = pipeline,
         topk=5,
         ):
     """query intended for use at the command line"""

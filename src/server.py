@@ -14,10 +14,11 @@ from aiohttp.web import Request, Response, json_response
 from aiohttp.web import HTTPInternalServerError
 from aiohttp.web_middlewares import _Handler
 from markdown import markdown # type: ignore
+import elasticsearch.helpers as helpers # type: ignore
 
 from util import answer_to_complete_sentence, INDEX_NAME, SOURCE_DIR
 from util import named_locks, log, es
-from transformer_query import gpu_pipeline
+from transformer_query import pipeline
 from create_index import get_paragraphs_for_query, index_all, index_one
 from canned_answer import no_answer, quick_answer_for_error, get_happy_employee
 from git_crud import GitClient
@@ -31,7 +32,7 @@ routes = web.RouteTableDef()
 #
 # The readme is served on: GET / HTTP/1.1
 #
-readme_path = 'README.md'
+readme_path = '../README.md'
 css_path = './github.css'
 
 qa_log = open('qa_log.multi_json','a')
@@ -132,9 +133,10 @@ async def exception_to_json_middleware(
     try:
         return await handler(request)
     except to_json_exceptions as e:
+        log.error(f'to_json_exceptions: {e}')
         return web.json_response(exception_to_dict(e))
     except Exception as e:
-        log.error(e)
+        log.error(f'other_error: {e}')
         return web.json_response({'whoops!':str(e)},status=500)
 
 @web.middleware
@@ -167,6 +169,10 @@ async def log_qa_middleware(
         ) -> web.StreamResponse:
     response = await handler(request)
     response = cast(web.Response, response)
+    if request.method != 'POST' or request.path != '/question':
+        return response
+    #import pdb
+    #pdb.set_trace()
     text = response.text
     if isinstance(text, str):
         reply = json.loads(text)
@@ -255,7 +261,7 @@ async def get_answers(query: str) -> List[Dict[str,Any]]:
     paragraphs = await get_paragraphs_for_query(query, INDEX_NAME, topk=5)
     for rank,paragraph in enumerate(paragraphs):
         context = paragraph['text']
-        answer = gpu_pipeline({'question': query, 'context': context},
+        answer = pipeline({'question': query, 'context': context},
                            handle_impossible_answer=True,
                            topk=1)
         answers.append(make_answer(
@@ -328,13 +334,31 @@ async def create_update(request: Request) -> Response:
         msg = "require a 'command' with value 'create' or 'update'"
         raise APIError(request, msg)
 
+def get_docids_from_request(request: Request) -> List[str]:
+    """Dispatch create and update requests"""
+    query = request.query
+    q_docId = query.get('docId',None)
+    if q_docId is None:
+        msg = 'query-string parameter "docId" required'
+        raise APIError(request, msg)
+    return q_docId.split(',')
+
+@routes.get('/index')
+async def read(request: Request) -> Response:
+    """Read the doc given in the docstring"""
+    docIds = get_docids_from_request(request)
+    return await git_client.read(docIds)
+
 @routes.delete('/index')
 async def delete(request: Request) -> Response:
     """Dispatch create and update requests"""
-    query = request.query
-    docId = query.get('docId')
-    git_response = await git_client.delete(docId)
-    es.delete(index=INDEX_NAME,id=docId)
+    docIds = get_docids_from_request(request)
+    git_response = await git_client.delete(docIds)
+    #es.delete(index=INDEX_NAME,id=docIds)
+    helpers.bulk(es,[
+        {'_op_type': 'delete', '_index': INDEX_NAME, '_id': docId, }
+        for docId in docIds
+        ])
     return git_response
 
 #
